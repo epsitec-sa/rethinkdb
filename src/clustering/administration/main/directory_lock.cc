@@ -103,7 +103,9 @@ directory_lock_t::directory_lock_t(const base_path_t &path, bool create, bool *c
         throw directory_open_failed_exc_t(EIO, directory_path);
     }
 #else
-    directory_fd.reset(::open((directory_path.path() + "/" LOCK_FILE_NAME).c_str(), O_CREAT | O_WRONLY));
+    directory_fd.reset(::open((directory_path.path() + "/" LOCK_FILE_NAME).c_str(),
+                              O_CREAT | O_WRONLY,
+                              S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH));
     if (directory_fd.get() == INVALID_FD) {
         throw directory_open_failed_exc_t(get_errno(), directory_path);
     }
