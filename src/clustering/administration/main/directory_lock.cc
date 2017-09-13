@@ -17,6 +17,8 @@
 
 #include "arch/io/disk.hpp"
 
+#define LOCK_FILE_NAME "dirlock"
+
 bool check_existence(const base_path_t& base_path) {
     return 0 == access(base_path.path().c_str(), F_OK);
 }
@@ -101,7 +103,7 @@ directory_lock_t::directory_lock_t(const base_path_t &path, bool create, bool *c
         throw directory_open_failed_exc_t(EIO, directory_path);
     }
 #else
-    directory_fd.reset(::open(directory_path.path().c_str(), O_RDONLY));
+    directory_fd.reset(::open((directory_path.path() + "/" LOCK_FILE_NAME).c_str(), O_CREAT | O_WRONLY));
     if (directory_fd.get() == INVALID_FD) {
         throw directory_open_failed_exc_t(get_errno(), directory_path);
     }
