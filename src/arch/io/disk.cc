@@ -478,11 +478,11 @@ file_open_result_t open_file(const char *path, const int mode, io_backender_t *b
 
     // Makes writes not update the access time of the file where available.  That's more efficient.
 #ifdef O_NOATIME
-    flags |= O_NOATIME;
+    // Do not use it because of EPERM on samba shares
+    //flags |= O_NOATIME;
 #endif
 
     // Open the file.
-
     {
         int res_open;
         do {
